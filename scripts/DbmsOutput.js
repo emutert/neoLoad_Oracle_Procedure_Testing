@@ -1,4 +1,4 @@
-/*This script originally written in java by Tom Kyte – I've converted it to javascript
+/*This script was originally written in java by Tom Kyte – I've converted it to javascript
 */
 function DbmsOutput(conn) {
     this.enable_stmt = conn.prepareCall("begin dbms_output.enable(:1); end;");
