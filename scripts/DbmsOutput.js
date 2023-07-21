@@ -1,21 +1,23 @@
+/*This script originally written in java by Tom Kyte – I've converted it to javascript
+*/
 function DbmsOutput(conn) {
     this.enable_stmt = conn.prepareCall("begin dbms_output.enable(:1); end;");
     this.disable_stmt = conn.prepareCall("begin dbms_output.disable; end;");
-    this.show_stmt = conn.prepareCall(`
-        declare
-            l_line varchar2(255);
-            l_done number;
-            l_buffer long;
-        begin
-            loop
-                exit when length(l_buffer) + 255 > :1 OR l_done = 1;
-                dbms_output.get_line(l_line, l_done);
-                l_buffer := l_buffer || l_line || chr(10);
-            end loop;
-            :2 := l_done;
-            :buffer := l_buffer;
-        end;
-    `);
+    this.show_stmt = conn.prepareCall(
+        'declare ' +
+        '    l_line varchar2(255); ' +
+        '    l_done number; ' +
+        '    l_buffer long; ' +
+        'begin ' +
+        '    loop ' +
+        '        exit when length(l_buffer) + 255 > :1 OR l_done = 1; ' +
+        '        dbms_output.get_line(l_line, l_done); ' +
+        '        l_buffer := l_buffer || l_line || chr(10); ' +
+        '    end loop; ' +
+        '    :2 := l_done; ' +
+        '    :buffer := l_buffer; ' +
+        'end;'
+    );
 }
 
 DbmsOutput.prototype.enable = function(size) {
